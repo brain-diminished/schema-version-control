@@ -1,0 +1,10 @@
+{
+    "name": "brain-diminished/schema-version-control",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dorian Savina",
+            "email": "dorian.savina@gmail.com"
+        }
+    ]
+}
