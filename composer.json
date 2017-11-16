@@ -6,5 +6,13 @@
             "name": "Dorian Savina",
             "email": "dorian.savina@gmail.com"
         }
-    ]
+    ],
+    "require": {
+        "doctrine/dbal": "^2.6.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "BrainDiminished\\SchemaVersionControl\\": "src/"
+        }
+    }
 }
