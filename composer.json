@@ -11,9 +11,22 @@
         "doctrine/dbal": "^2.6.1",
         "symfony/yaml": "^3.3"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7.21",
+        "satooshi/php-coveralls": "^1.0.1",
+        "thecodingmachine/dbal-fluid-schema-builder": "^1.3.0"
+    },
     "autoload": {
         "psr-4": {
             "BrainDiminished\\SchemaVersionControl\\": "src/"
         }
+    },
+    "autoload-dev" : {
+        "psr-4" : {
+            "BrainDiminished\\SchemaVersionControl\\Test\\" : "tests/"
+        }
+    },
+    "archive": {
+        "exclude": ["tests", "*phpunit.xml"]
     }
 }

@@ -1,0 +1,31 @@
+schema:
+  tables:
+    animal:
+      columns:
+        id:
+          primary_key: true
+          type: integer
+          not_null: true
+          auto_increment: true
+          comment: '@Autoincrement'
+        name:
+          type: string
+          length: 45
+          not_null: true
+        order: integer
+      indexes:
+        IDX_6AAB231FAB06D34C:
+          column: name
+    cat:
+      columns:
+        id:
+          primary_key: true
+          type: integer
+          not_null: true
+        cuteness_level: integer
+      foreign_keys:
+        FK_9E5E43A81147174B:
+          column: id
+          references: animal
+          onDelete: null
+          onUpdate: null
