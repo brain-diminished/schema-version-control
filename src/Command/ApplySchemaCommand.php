@@ -19,6 +19,7 @@ class ApplySchemaCommand extends AbstractSchemaCommand
             ->setDescription('Update schema from schema description file.')
             ->addOption('assume-yes', 'y', InputOption::VALUE_NONE, 'Automatic yes to prompts')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'dry run')
+            ->addOption('strict', 's', InputOption::VALUE_NONE, 'strictly respect columns/indexes/constraints order in tables')
         ;
     }
 
@@ -33,28 +34,33 @@ class ApplySchemaCommand extends AbstractSchemaCommand
 
     protected function updateSchema(InputInterface $input, OutputInterface $output)
     {
-        $diff = $this->schemaVersionControlService->getSchemaDiff();
-
-        if (!empty($diff->changedTables)) {
-            $output->writeln(count($diff->changedTables).' changed tables');
-        }
-        if (!empty($diff->newTables)) {
-            $output->writeln(count($diff->newTables).' new tables');
-        }
-        if (!empty($diff->removedTables)) {
-            $output->writeln(count($diff->removedTables).' removed tables');
-        }
-
         if (!$input->getOption('assume-yes')) {
+            $diff = $this->schemaVersionControlService->getSchemaDiff();
+
+            if (!empty($diff->changedTables)) {
+                $output->writeln(count($diff->changedTables).' changed tables');
+            }
+            if (!empty($diff->newTables)) {
+                $output->writeln(count($diff->newTables).' new tables');
+            }
+            if (!empty($diff->removedTables)) {
+                $output->writeln(count($diff->removedTables).' removed tables');
+            }
             /** @var QuestionHelper $helper */
             $helper = $this->getHelper('question');
-            $question = new ConfirmationQuestion('Continue? (yes/no)');
+            $question = new ConfirmationQuestion('Continue (yes/no)? ');
             if (!$helper->ask($input, $output, $question)) {
                 return;
             }
         }
 
-        $this->schemaVersionControlService->applySchema();
+        $strict = $input->getOption('strict');
+        $statements = $this->schemaVersionControlService->applySchema($strict);
+        if (empty($statements)) {
+            $output->writeln('No Sql statement executed');
+        } else {
+            $output->writeln(count($statements).' Sql statements executed');
+        }
     }
 
     protected function getMigrationSql(InputInterface $input, OutputInterface $output)
