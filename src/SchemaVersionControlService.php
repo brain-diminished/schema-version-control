@@ -4,9 +4,11 @@ namespace BrainDiminished\SchemaVersionControl;
 use BrainDiminished\SchemaVersionControl\Utils\SchemaBuilder;
 use BrainDiminished\SchemaVersionControl\Utils\SchemaNormalizer;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\SchemaDiff;
+use Doctrine\DBAL\Schema\Table;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Yaml\Yaml;
 
@@ -67,13 +69,20 @@ class SchemaVersionControlService
      * Alter schema in database, according to config file.
      * @return int
      */
-    public function applySchema()
+    public function applySchema(bool $strict = false): array
     {
         $sqlStatements = $this->getMigrationSql();
         foreach ($sqlStatements as $sqlStatement) {
             $this->connection->exec($sqlStatement);
         }
-        return count($sqlStatements);
+        if ($strict) {
+            $reorderSql = $this->reorderSql();
+            $sqlStatements = array_merge($sqlStatements, $reorderSql);
+            foreach ($reorderSql as $sqlStatement) {
+                $this->connection->exec($sqlStatement);
+            }
+        }
+        return $sqlStatements;
     }
 
     /**
@@ -116,5 +125,84 @@ class SchemaVersionControlService
             mkdir($directory, 0777, true);
         }
         file_put_contents($this->schemaFile, $yamlSchema);
+    }
+
+    public function reorderSql(): array
+    {
+        $sql = [];
+        $currentSchema = $this->getCurrentSchema();
+        $versionedSchema = $this->loadSchemaFile();
+        foreach ($currentSchema->getTables() as $currentTable) {
+            $tableName = $currentTable->getName();
+            if (!$versionedSchema->hasTable($tableName)) {
+                continue;
+            }
+            $versionedTable = $versionedSchema->getTable($tableName);
+            $order = array_keys($versionedTable->getColumns());
+
+            $columnOrder = $this->reorderColumnsSql($currentTable, $order);
+            if ($columnOrder !== null) {
+                $sql[] = $columnOrder;
+            }
+        }
+        return $sql;
+    }
+
+    public function reorderColumnsSql(Table $table, array $order): ?string
+    {
+        $sql = [];
+        $i = 0;
+        $j = 0;
+        $n = count($order);
+        $previousColumn = null;
+        /** @var Column[] $columns */
+        $columns = array_values($table->getColumns());
+        while($i < $n) {
+            $columnName = $order[$i];
+            if (!$table->hasColumn($columnName)) {
+                // column does not exist
+                $i++;
+                continue;
+            }
+
+            if ($columns[$j]->getName() === $columnName) {
+                // column well positioned
+                $previousColumn = $columnName;
+                $j++;
+                $i++;
+                continue;
+            }
+
+            $column = $table->getColumn($columnName);
+            $columnArray = $column->toArray();
+            $columnArray['comment'] = $column->getComment();
+            $modifySql = $this->connection->getDatabasePlatform()->getColumnDeclarationSQL($column->getName(), $columnArray);
+            if ($previousColumn === null) {
+                $modifySql .= ' FIRST';
+            } else {
+                $modifySql .= " AFTER $previousColumn";
+            }
+            $sql[] = "MODIFY $modifySql";
+
+            $previousColumn = $columnName;
+            $j++;
+            $i++;
+        }
+        if (!empty($sql)) {
+            return 'ALTER TABLE '.$table->getName().' '.implode(',', $sql).';';
+        }
+        else {
+            return null;
+        }
+    }
+
+    public function reorderIndexes(Table $table, array $order)
+    {
+        // TODO
+    }
+
+    public function reorderForeignKeys(Table $table, array $order)
+    {
+        // TODO
     }
 }
