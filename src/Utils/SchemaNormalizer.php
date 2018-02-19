@@ -119,8 +119,11 @@ class SchemaNormalizer
         }
 
         $constraintDesc['references'] = $this->normalizeForeignReference($foreignKeyConstraint);
-        if (!empty($foreignKeyConstraint->getOptions())) {
-            $constraintDesc = array_merge($constraintDesc, $foreignKeyConstraint->getOptions());
+        foreach ($foreignKeyConstraint->getOptions() as $option => $value) {
+            if (($option === 'onUpdate' || $option === 'onDelete') && $value === 'NO ACTION') {
+                continue;
+            }
+            $constraintDesc[$option] = $value;
         }
         return $constraintDesc;
     }
