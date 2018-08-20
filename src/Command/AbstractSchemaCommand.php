@@ -4,7 +4,7 @@ namespace BrainDiminished\SchemaVersionControl\Command;
 use BrainDiminished\SchemaVersionControl\SchemaVersionControlService;
 use Symfony\Component\Console\Command\Command;
 
-class AbstractSchemaCommand extends Command
+abstract class AbstractSchemaCommand extends Command
 {
     /** @var SchemaVersionControlService */
     protected $schemaVersionControlService;
