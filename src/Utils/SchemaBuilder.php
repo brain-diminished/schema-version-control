@@ -137,6 +137,10 @@ class SchemaBuilder
             $columns = $indexDesc['columns'];
         }
         $options = array_diff_key($indexDesc, ['column'=>0,'columns'=>0]);
-        $table->addIndex($columns, $name, [], $options);
+        if (isset($indexDesc['unique']) && $indexDesc['unique'] === true) {
+            $table->addUniqueIndex($columns, $name, [], $options);
+        } else {
+            $table->addIndex($columns, $name, [], $options);
+        }
     }
 }
