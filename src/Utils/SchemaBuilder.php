@@ -3,6 +3,7 @@ namespace BrainDiminished\SchemaVersionControl\Utils;
 
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\DBAL\Schema\SchemaConfig;
 use Doctrine\DBAL\Schema\Table;
 
 /**
@@ -24,7 +25,12 @@ class SchemaBuilder
     public function build(array $schemaDesc): Schema
     {
         $this->schemaDesc = $schemaDesc;
-        $schema = new Schema();
+        $config = null;
+        if (isset($schemaDesc['schemaName'])) {
+            $config = new SchemaConfig();
+            $config->setName($schemaDesc['schemaName']);
+        }
+        $schema = new Schema([], [], $config);
         foreach ($schemaDesc['tables'] as $name => $tableDesc) {
             $table = $schema->createTable($name);
             $this->buildTable($tableDesc, $table);

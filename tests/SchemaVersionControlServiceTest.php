@@ -20,6 +20,13 @@ class SchemaVersionControlServiceTest extends AbstractSchemaTest
         $this->assertEquals(['id'], $animalTable->getPrimaryKeyColumns());
     }
 
+    public function testSchemaName()
+    {
+        $schemaVersionControlService = new SchemaVersionControlService(self::$dbConnection, __DIR__.'/var/schema2.yml');
+        $schema = $schemaVersionControlService->loadSchemaFile();
+        $this->assertEquals('schema_manager_test_case', $schema->getName());
+    }
+
     public function testIndexes()
     {
         $schemaVersionControlService = new SchemaVersionControlService(self::$dbConnection, __DIR__.'/var/schema2.yml');

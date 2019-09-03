@@ -26,7 +26,7 @@ class SchemaNormalizer
     public function normalize(Schema $schema): array
     {
         $this->schema = $schema;
-        $schemaDesc = [];
+        $schemaDesc = ['schemaName' => $this->schema->getName()];
         $schemaDesc['tables'] = [];
         foreach ($schema->getTables() as $table) {
             $schemaDesc['tables'][$table->getName()] = $this->normalizeTable($table);
