@@ -44,6 +44,10 @@ class SchemaNormalizer
             $pk_columns = [];
         }
 
+        if ($table->hasOption('comment') && $table->getOption('comment')) {
+            $tableDesc['comment'] = $table->getOption('comment');
+        }
+
         // list columns
         foreach ($table->getColumns() as $columnName => $column) {
             $tableDesc['columns'][$columnName] = $this->normalizeColumn($column, in_array($column->getName(), $pk_columns));

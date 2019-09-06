@@ -35,6 +35,11 @@ class SchemaBuilder
     protected function buildTable(array $tableDesc, Table $table)
     {
         $pk_columns = [];
+
+        if (isset($tableDesc['comment'])) {
+            $table->addOption("comment", $tableDesc['comment']);
+        }
+
         foreach ($tableDesc['columns'] as $columnName => $columnDesc) {
             if (!is_array($columnDesc)) {
                 $columnDesc = ['type' => $columnDesc];
