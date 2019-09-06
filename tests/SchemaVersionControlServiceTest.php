@@ -30,6 +30,16 @@ class SchemaVersionControlServiceTest extends AbstractSchemaTest
         $this->assertFalse($userTable->getIndex("users_status_country_idx")->isUnique());
     }
 
+    public function testComment()
+    {
+        $schemaVersionControlService = new SchemaVersionControlService(self::$dbConnection, __DIR__.'/var/schema2.yml');
+        $schema = $schemaVersionControlService->loadSchemaFile();
+
+        $animalTable = $schema->getTable('animal');
+        $this->assertTrue($animalTable->hasOption('comment'));
+        $this->assertEquals('test comment', $animalTable->getOption('comment'));
+    }
+
     public function testDump()
     {
         $schemaFile = __DIR__.'/var/schema2.yml';

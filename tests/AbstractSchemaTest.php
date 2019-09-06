@@ -80,7 +80,8 @@ abstract class AbstractSchemaTest extends \PHPUnit_Framework_TestCase
         $db->table('animal')
             ->column('id')->integer()->primaryKey()->autoIncrement()->comment('@Autoincrement')
             ->column('name')->string(45)->index()
-            ->column('order')->integer()->null();
+            ->column('order')->integer()->null()
+            ->then()->getDbalTable()->addOption('comment', 'test comment');
 
         $db->table('dog')
             ->extends('animal')
