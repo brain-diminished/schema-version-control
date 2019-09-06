@@ -4,10 +4,11 @@ namespace BrainDiminished\SchemaVersionControl\Test;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use PHPUnit\Framework\TestCase;
 use TheCodingMachine\FluidSchema\DefaultNamingStrategy;
 use TheCodingMachine\FluidSchema\FluidSchema;
 
-abstract class AbstractSchemaTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractSchemaTest extends TestCase
 {
     /** @var Connection */
     protected static $dbConnection;

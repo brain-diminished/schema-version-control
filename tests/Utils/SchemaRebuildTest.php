@@ -6,9 +6,10 @@ use BrainDiminished\SchemaVersionControl\Utils\SchemaNormalizer;
 use Doctrine\DBAL\Platforms\MySQL57Platform;
 use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\Schema;
+use PHPUnit\Framework\TestCase;
 use TheCodingMachine\FluidSchema\FluidSchema;
 
-class SchemaRebuildTest extends \PHPUnit_Framework_TestCase
+class SchemaRebuildTest extends TestCase
 {
     protected function constructSchema()
     {
