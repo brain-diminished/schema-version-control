@@ -50,7 +50,7 @@ class SchemaNormalizer
 
         // list columns
         foreach ($table->getColumns() as $columnName => $column) {
-            $tableDesc['columns'][$columnName] = $this->normalizeColumn($column, in_array($column->getName(), $pk_columns));
+            $tableDesc['columns'][$column->getName()] = $this->normalizeColumn($column, in_array($column->getName(), $pk_columns));
         }
 
         // list indexes
