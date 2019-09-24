@@ -121,9 +121,13 @@ class SchemaVersionControlService
         $yamlSchema = Yaml::dump(['schema' =>$desc], 10, 2);
         $directory = dirname($this->schemaFile);
         if (!file_exists($directory)) {
-            mkdir($directory, 0777, true);
+            if (mkdir($directory, 0666, true) === false) {
+                throw new \RuntimeException('Could not create directory '.$directory);
+            }
         }
-        file_put_contents($this->schemaFile, $yamlSchema);
+        if (file_put_contents($this->schemaFile, $yamlSchema) === false) {
+            throw new \RuntimeException('Could not edit dump file '.$this->schemaFile);
+        }
     }
 
     public function reorderSql(): array
