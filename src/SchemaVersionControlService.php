@@ -67,7 +67,6 @@ class SchemaVersionControlService
 
     /**
      * Alter schema in database, according to config file.
-     * @return int
      */
     public function applySchema(bool $strict = false): array
     {
