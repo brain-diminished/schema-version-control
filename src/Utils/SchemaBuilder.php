@@ -134,13 +134,24 @@ class SchemaBuilder
         return $pkColumns;
     }
 
-    protected function buildIndex(array $indexDesc, Table $table, string $name)
+    protected function buildIndex($indexDesc, Table $table, $name)
     {
+        if (!is_array($indexDesc)) {
+            $indexDesc = ['column' => $indexDesc];
+        } else if (array_keys($indexDesc) === range(0, count($indexDesc) - 1)) {
+            $indexDesc = ['columns' => $indexDesc];
+        }
+
         if (isset($indexDesc['column'])) {
             $columns = [$indexDesc['column']];
         } else {
             $columns = $indexDesc['columns'];
         }
+
+        if (is_int($name)) {
+            $name = implode('_', $columns);
+        }
+
         $options = array_diff_key($indexDesc, ['column'=>0,'columns'=>0]);
         if (isset($indexDesc['unique']) && $indexDesc['unique'] === true) {
             $table->addUniqueIndex($columns, $name, [], $options);
