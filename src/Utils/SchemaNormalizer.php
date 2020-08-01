@@ -39,7 +39,7 @@ class SchemaNormalizer
         $tableDesc = [];
 
         if ($table->hasPrimaryKey()) {
-            $pk_columns = $table->getPrimaryKeyColumns();
+            $pk_columns = $table->getPrimaryKey()->getUnquotedColumns();
         } else {
             $pk_columns = [];
         }
