@@ -28,5 +28,10 @@
     },
     "archive": {
         "exclude": ["tests", "*phpunit.xml"]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
     }
 }
