@@ -1,0 +1,178 @@
+schema:
+  tables:
+    animal:
+      comment: 'test comment'
+      columns:
+        id:
+          primary_key: true
+          type: integer
+          not_null: true
+          auto_increment: true
+          comment: '@Autoincrement'
+        name:
+          type: string
+          length: 45
+          not_null: true
+        order: integer
+      indexes:
+        IDX_6AAB231FAB06D34C:
+          column: name
+          lengths:
+            - null
+    cat:
+      columns:
+        id:
+          primary_key: true
+          type: integer
+          not_null: true
+        cuteness_level: integer
+      foreign_keys:
+        FK_9E5E43A81147174B:
+          column: id
+          references:
+            table: animal
+            column: id
+          onDelete: null
+          onUpdate: null
+    users:
+      columns:
+        id:
+          primary_key: true
+          type: integer
+          not_null: true
+        country_id:
+          type: integer
+          not_null: true
+        login:
+          type: string
+          length: 255
+          not_null: true
+        password:
+          type: string
+          length: 255
+        status:
+          type: string
+          length: 10
+      indexes:
+        users_login_idx:
+          column: login
+          unique: true
+          lengths:
+            - null
+        IDX_1483A5E9F74CCB5C:
+          column: country_id
+          lengths:
+            - null
+        users_status_country_idx:
+          columns:
+            - status
+            - country_id
+          lengths:
+            - null
+            - null
+      foreign_keys:
+        FK_1483A5E91147174B:
+          column: id
+          references:
+            table: contact
+            column: id
+          onDelete: null
+          onUpdate: null
+        FK_1483A5E9F74CCB5C:
+          column: country_id
+          references:
+            table: country
+            column: id
+          onDelete: null
+          onUpdate: null
+    contact:
+      columns:
+        id:
+          primary_key: true
+          type: integer
+          not_null: true
+        manager_id: integer
+        email:
+          type: string
+          length: 255
+          not_null: true
+      indexes:
+        IDX_4C62E63873739B88:
+          column: manager_id
+          lengths:
+            - null
+      foreign_keys:
+        FK_4C62E6381147174B:
+          column: id
+          references:
+            table: person
+            column: id
+          onDelete: null
+          onUpdate: null
+        FK_4C62E63873739B88:
+          column: manager_id
+          references:
+            table: contact
+            column: id
+          onDelete: null
+          onUpdate: null
+    person:
+      columns:
+        id:
+          primary_key: true
+          type: integer
+          not_null: true
+          auto_increment: true
+          comment: '@Autoincrement'
+        name:
+          type: string
+          length: 255
+          not_null: true
+        modified_at:
+          type: datetime
+          length: 0
+        order: integer
+    country:
+      columns:
+        id:
+          primary_key: true
+          type: integer
+          not_null: true
+          auto_increment: true
+          comment: '@Autoincrement'
+        label:
+          type: string
+          length: 255
+          not_null: true
+    dog:
+      columns:
+        id:
+          primary_key: true
+          type: integer
+          not_null: true
+        owner_id:
+          type: integer
+          not_null: true
+        race:
+          type: string
+          length: 45
+      indexes:
+        IDX_812C397D8FCB80A4:
+          column: owner_id
+          lengths:
+            - null
+      foreign_keys:
+        FK_812C397D1147174B:
+          column: id
+          references:
+            table: animal
+            column: id
+          onDelete: null
+          onUpdate: null
+        FK_812C397D8FCB80A4:
+          column: owner_id
+          references:
+            table: person
+            column: id
+          onDelete: null
+          onUpdate: null

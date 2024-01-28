@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DumpSchemaCommand extends AbstractSchemaCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('schema:dump')
@@ -20,8 +20,9 @@ class DumpSchemaCommand extends AbstractSchemaCommand
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->schemaVersionControlService->dumpSchema();
+        return 0;
     }
 }

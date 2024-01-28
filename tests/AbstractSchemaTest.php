@@ -13,7 +13,7 @@ abstract class AbstractSchemaTest extends TestCase
     /** @var Connection */
     protected static $dbConnection;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::resetConnection();
         $dbConnection = self::getConnection();

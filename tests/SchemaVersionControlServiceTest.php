@@ -17,12 +17,12 @@ class SchemaVersionControlServiceTest extends AbstractSchemaTest
         $tables = $schema->getTables();
         $this->assertEquals(2, count($tables));
         $animalTable = $schema->getTable('animal');
-        $this->assertEquals(['id'], $animalTable->getPrimaryKeyColumns());
+        $this->assertEquals(['id'], $animalTable->getPrimaryKey()->getColumns());
     }
 
     public function testIndexes()
     {
-        $schemaVersionControlService = new SchemaVersionControlService(self::$dbConnection, __DIR__.'/var/schema2.yml');
+        $schemaVersionControlService = new SchemaVersionControlService(self::$dbConnection, __DIR__.'/etc/schema2.yml');
         $schema = $schemaVersionControlService->loadSchemaFile();
 
         $userTable = $schema->getTable('users');
@@ -32,7 +32,7 @@ class SchemaVersionControlServiceTest extends AbstractSchemaTest
 
     public function testComment()
     {
-        $schemaVersionControlService = new SchemaVersionControlService(self::$dbConnection, __DIR__.'/var/schema2.yml');
+        $schemaVersionControlService = new SchemaVersionControlService(self::$dbConnection, __DIR__.'/etc/schema2.yml');
         $schema = $schemaVersionControlService->loadSchemaFile();
 
         $animalTable = $schema->getTable('animal');
