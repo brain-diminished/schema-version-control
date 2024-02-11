@@ -8,7 +8,6 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="false"
          bootstrap="vendor/autoload.php"
 >
     <testsuites>
@@ -18,7 +17,7 @@
     </testsuites>
 
     <php>
-        <var name="db_host" value="localhost" />
+        <var name="db_host" value="127.0.0.1" />
         <var name="db_username" value="root" />
         <var name="db_password" value="password" />
         <var name="db_name" value="schema_manager_test_case" />
@@ -26,16 +25,13 @@
         <var name="db_driver" value="pdo_mysql"/>
     </php>
 
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+    <coverage processUncoveredFiles="true">
+        <include>
             <directory suffix=".php">src/</directory>
-            <exclude>
-                <directory suffix=".php">src/Test</directory>
-            </exclude>
-        </whitelist>
-    </filter>
-    <logging>
-        <log type="coverage-html" target="build/coverage" charset="UTF-8" yui="true" highlight="true"/>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
-    </logging>
+        </include>
+        <report>
+            <clover outputFile="build/logs/clover.xml"/>
+            <html outputDirectory="build/coverage"/>
+        </report>
+    </coverage>
 </phpunit>

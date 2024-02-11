@@ -1,0 +1,50 @@
+name: "Continuous Integration"
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+jobs:
+  test:
+    name: "Test"
+    runs-on: "ubuntu-latest"
+
+    strategy:
+      matrix:
+        php-version:
+          - "7.4"
+          - "8.0"
+          - "8.1"
+          - "8.2"
+          - "8.3"
+        dependencies:
+          - "lowest"
+          - "highest"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: "xdebug"
+          php-version: "${{ matrix.php-version }}"
+          ini-values: "zend.assertions=1"
+
+      - uses: "ramsey/composer-install@v2"
+        with:
+          dependency-versions: "${{ matrix.dependencies }}"
+
+      - name: "Run PHPUnit"
+        run: "./tests/phpunit-mysql8.sh"
+
+      - name: Upload coverage results to Coveralls
+        # skip php-coversalls for lowest deps
+        # it fails on lowest depedencies
+        if: "${{ 'highest' == matrix.dependencies }}"
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          vendor/bin/php-coveralls --coverage_clover=build/logs/clover.xml -v

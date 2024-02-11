@@ -12,7 +12,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  */
 class ApplySchemaCommand extends AbstractSchemaCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('schema:apply')
@@ -23,13 +23,14 @@ class ApplySchemaCommand extends AbstractSchemaCommand
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($input->getOption('dry-run')) {
             $this->getMigrationSql($input, $output);
         } else {
             $this->updateSchema($input, $output);
         }
+        return 0;
     }
 
     protected function updateSchema(InputInterface $input, OutputInterface $output)
